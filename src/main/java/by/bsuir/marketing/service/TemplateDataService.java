@@ -2,27 +2,24 @@ package by.bsuir.marketing.service;
 
 import by.bsuir.marketing.model.Template;
 import by.bsuir.marketing.repository.TemplateRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class TemplateDataService implements DataService<Template> {
 
     private final TemplateRepository templateRepository;
-
-    @Autowired
-    public TemplateDataService(TemplateRepository templateRepository) {
-        this.templateRepository = templateRepository;
-    }
 
     public List<Template> getAllTemplates() {
         return templateRepository.findAll();
     }
 
-    public Template getTemplateById(int id) {
-        return templateRepository.findById(id).orElse(null);
+    public Optional<Template> getTemplateById(int id) {
+        return templateRepository.findById(id);
     }
 
     public Template createTemplate(Template template) {

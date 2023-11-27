@@ -2,27 +2,25 @@ package by.bsuir.marketing.service;
 
 import by.bsuir.marketing.model.AccountStatus;
 import by.bsuir.marketing.repository.AccountStatusRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class AccountStatusDataService implements DataService<AccountStatus> {
 
     private final AccountStatusRepository accountStatusRepository;
-
-    @Autowired
-    public AccountStatusDataService(AccountStatusRepository accountStatusRepository) {
-        this.accountStatusRepository = accountStatusRepository;
-    }
 
     public List<AccountStatus> getAllAccountStatuses() {
         return accountStatusRepository.findAll();
     }
 
-    public AccountStatus getAccountStatusById(int id) {
-        return accountStatusRepository.findById(id).orElse(null);
+    public Optional<AccountStatus> getAccountStatusById(int id) {
+        return accountStatusRepository.findById(id);
     }
 
     public AccountStatus createAccountStatus(AccountStatus accountStatus) {

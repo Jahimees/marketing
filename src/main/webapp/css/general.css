@@ -1,0 +1,148 @@
+input, select, textarea {
+    width: 90%;
+    margin: 5px auto !important;
+    display: block !important;
+    font-size: 15px !important;
+    border-radius: 10px;
+}
+
+select {
+    padding: 5px 0;
+}
+
+label {
+    margin-left: 5%;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+/*BUTTONS*/
+.menu-btn {
+    cursor: pointer;
+    color: black;
+    font-family: SansSerif;
+    text-align: center;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+
+}
+
+.simple-btn {
+    padding: 5px 10px;
+    color: black;
+    text-align: center;
+    cursor: pointer;
+    width: 150px;
+    font-family: SansSerif;
+    margin-right: 10px;
+    border-radius: 10px;
+}
+
+.btn-gray {
+    background-color: #EFEFEF;
+    border: none;
+}
+
+.btn-gray:hover {
+    background-color: #666666;
+    color: white;
+}
+
+/*TEXT*/
+div {
+    font-family: SansSerif, serif;
+    color: black;
+    font-size: 1em;
+}
+
+.small-text {
+    font-family: SansSerif, serif;
+    color: black;
+    font-size: 10px;
+}
+
+.medium-text {
+    font-family: SansSerif, serif;
+    color: black;
+    font-size: 15px;
+}
+
+.big-text {
+    font-family: SansSerif, serif;
+    color: black;
+    font-size: 20px;
+}
+
+.big-title-text {
+    font-family: SansSerif, serif;
+    font-size: 30px;
+}
+
+.background-layer {
+    background-color: #EFEFEF;
+    padding: 20px 0 0 0;
+    height: 100%;
+}
+
+.white-block {
+    background-color: #FFF;
+    padding: 20px;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.w-80 {
+    width: 80%;
+}
+
+.w-30 {
+    width: 30%;
+}
+
+.w-8 {
+    width: 8%;
+}
+
+.m-t-20px {
+    margin-top: 20px !important;
+}
+
+.m-b-20px {
+    margin-bottom: 20px !important;
+}
+
+.center-box {
+    margin: 0 auto;
+    display: block;
+}
+
+.inline-flex-box {
+    display: inline-flex;
+}
+
+.horizontal-center {
+    display: inline-flex;
+    align-content: center;
+    flex-wrap: wrap;
+    height: 100%;
+}
+
+.left-right-container {
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.invalid-label {
+    color: red;
+    font-size: 10px;
+    display: none
+}
+
+.modal-dialog.big-dialog {
+    max-width: 1000px !important;
+}

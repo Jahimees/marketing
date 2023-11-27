@@ -2,27 +2,25 @@ package by.bsuir.marketing.service;
 
 import by.bsuir.marketing.model.FieldAnswer;
 import by.bsuir.marketing.repository.FieldAnswerRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class FieldAnswerDataService {
 
     private final FieldAnswerRepository fieldAnswerRepository;
-
-    @Autowired
-    public FieldAnswerDataService(FieldAnswerRepository fieldAnswerRepository) {
-        this.fieldAnswerRepository = fieldAnswerRepository;
-    }
 
     public List<FieldAnswer> getAllFieldAnswers() {
         return fieldAnswerRepository.findAll();
     }
 
-    public FieldAnswer getFieldAnswerById(int id) {
-        return fieldAnswerRepository.findById(id).orElse(null);
+    public Optional<FieldAnswer> getFieldAnswerById(int id) {
+        return fieldAnswerRepository.findById(id);
     }
 
     public FieldAnswer createFieldAnswer(FieldAnswer fieldAnswer) {

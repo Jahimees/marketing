@@ -2,27 +2,24 @@ package by.bsuir.marketing.service;
 
 import by.bsuir.marketing.model.Swot;
 import by.bsuir.marketing.repository.SwotRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class SwotDataService implements DataService<Swot> {
 
     private final SwotRepository swotRepository;
-
-    @Autowired
-    public SwotDataService(SwotRepository swotRepository) {
-        this.swotRepository = swotRepository;
-    }
 
     public List<Swot> getAllSwots() {
         return swotRepository.findAll();
     }
 
-    public Swot getSwotById(int id) {
-        return swotRepository.findById(id).orElse(null);
+    public Optional<Swot> getSwotById(int id) {
+        return swotRepository.findById(id);
     }
 
     public Swot createSwot(Swot swot) {
@@ -32,12 +29,10 @@ public class SwotDataService implements DataService<Swot> {
     public Swot updateSwot(int id, Swot swot) {
         Swot existingSwot = swotRepository.findById(id).orElse(null);
         if (existingSwot != null) {
-            // Update the properties of the existing Swot object
-            // based on the provided Swot object
-            // For example:
-            // existingSwot.setProperty1(swot.getProperty1());
-            // existingSwot.setProperty2(swot.getProperty2());
-            // ...
+            existingSwot.setStrength(swot.getStrength());
+            existingSwot.setWeakness(swot.getWeakness());
+            existingSwot.setOpportunity(swot.getOpportunity());
+            existingSwot.setThreat(swot.getThreat());
             return swotRepository.save(existingSwot);
         }
         return null;

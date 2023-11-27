@@ -2,8 +2,6 @@ package by.bsuir.marketing.service;
 
 import by.bsuir.marketing.model.Account;
 import by.bsuir.marketing.model.MyPrincipal;
-import com.example.worktime.entity.Account;
-import com.example.worktime.entity.CustomPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -48,7 +46,7 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("Bad password");
         }
 
-        MyPrincipal principal = new MyPrincipal(account.getIdAccount(), account.getRole());
+        MyPrincipal principal = new MyPrincipal(account.getIdAccount(), account.getRole().getName());
 
         return new UsernamePasswordAuthenticationToken(
                 principal, password, account.getAuthorities());

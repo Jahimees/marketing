@@ -22,6 +22,7 @@ import org.springframework.util.unit.DataSize;
 
 @Configuration
 @PropertySource("classpath:application.properties")
+@PropertySource("classpath:constants.properties")
 @RequiredArgsConstructor
 public class MainApplicationConfiguration {
 
@@ -54,7 +55,6 @@ public class MainApplicationConfiguration {
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .disable(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS)
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                .setDateFormat(new StdDateFormat())
-                .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+                .setDateFormat(new StdDateFormat());
     }
 }

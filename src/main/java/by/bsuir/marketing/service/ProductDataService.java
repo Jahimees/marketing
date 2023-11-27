@@ -1,28 +1,39 @@
 package by.bsuir.marketing.service;
 
+import by.bsuir.marketing.model.Account;
 import by.bsuir.marketing.model.Product;
 import by.bsuir.marketing.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ProductDataService implements DataService<Product>{
 
     private final ProductRepository productRepository;
-
-    @Autowired
-    public ProductDataService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    private final AccountDataService accountDataService;
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
-    public Product getProductById(int id) {
-        return productRepository.findById(id).orElse(null);
+    public List<Product> getAllProductsByIdAccount(int idAccount) {
+        Optional<Account> accountOptional = accountDataService.getAccountById(idAccount);
+
+        if (accountOptional.isEmpty()) {
+            throw new NotFoundException("Account not found");
+        }
+
+        return productRepository.findProductsByAccount(accountOptional.get());
+    }
+
+    public Optional<Product> getProductById(int id) {
+        return productRepository.findById(id);
     }
 
     public Product createProduct(Product product) {

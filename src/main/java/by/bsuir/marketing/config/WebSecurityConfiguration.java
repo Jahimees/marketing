@@ -31,13 +31,15 @@ public class WebSecurityConfiguration {
         http
                 .authorizeHttpRequests(authz ->
                         authz
+                                .requestMatchers("/account").authenticated()
                                 .requestMatchers("/**").permitAll()
                 )
                 .formLogin(form -> form
                         .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/marketing")
+                        .defaultSuccessUrl("/account")
                         .usernameParameter("username")
                         .passwordParameter("password")
+                        .loginPage("/authorize")
                         .permitAll()
                 )
                 .logout(logout -> {

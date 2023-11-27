@@ -1,5 +1,6 @@
 package by.bsuir.marketing.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -7,7 +8,10 @@ import org.springframework.security.core.GrantedAuthority;
 @Entity
 @Table(name = "role")
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Role implements BaseEntity, GrantedAuthority {
+
+    private static final long serialVersionUID = 1l;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

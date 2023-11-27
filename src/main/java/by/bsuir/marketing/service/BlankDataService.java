@@ -2,27 +2,25 @@ package by.bsuir.marketing.service;
 
 import by.bsuir.marketing.model.Blank;
 import by.bsuir.marketing.repository.BlankRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class BlankDataService implements DataService<Blank> {
 
     private final BlankRepository blankRepository;
-
-    @Autowired
-    public BlankDataService(BlankRepository blankRepository) {
-        this.blankRepository = blankRepository;
-    }
 
     public List<Blank> getAllBlanks() {
         return blankRepository.findAll();
     }
 
-    public Blank getBlankById(int id) {
-        return blankRepository.findById(id).orElse(null);
+    public Optional<Blank> getBlankById(int id) {
+        return blankRepository.findById(id);
     }
 
     public Blank createBlank(Blank blank) {

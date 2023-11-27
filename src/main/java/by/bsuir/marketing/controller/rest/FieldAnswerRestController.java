@@ -1,45 +1,56 @@
 package by.bsuir.marketing.controller.rest;
 
+import by.bsuir.marketing.model.BaseEntity;
 import by.bsuir.marketing.model.FieldAnswer;
+import by.bsuir.marketing.model.MyResponseEntity;
 import by.bsuir.marketing.service.FieldAnswerDataService;
+import lombok.RequiredArgsConstructor;
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/field-answers")
+@RequiredArgsConstructor
 public class FieldAnswerRestController {
 
     private final FieldAnswerDataService fieldAnswerDataService;
 
-    @Autowired
-    public FieldAnswerRestController(FieldAnswerDataService fieldAnswerDataService) {
-        this.fieldAnswerDataService = fieldAnswerDataService;
-    }
-
     @GetMapping
-    public List<FieldAnswer> getAllFieldAnswers() {
-        return fieldAnswerDataService.getAllFieldAnswers();
+    public ResponseEntity<List<FieldAnswer>> getAllFieldAnswers() {
+        return ResponseEntity.ok(fieldAnswerDataService.getAllFieldAnswers());
     }
 
     @GetMapping("/{id}")
-    public FieldAnswer getFieldAnswerById(@PathVariable int id) {
-        return fieldAnswerDataService.getFieldAnswerById(id);
+    public ResponseEntity<BaseEntity> getFieldAnswerById(@PathVariable int id) {
+        Optional<FieldAnswer> fieldAnswerOptional = fieldAnswerDataService.getFieldAnswerById(id);
+
+        if (fieldAnswerOptional.isEmpty()) {
+            return new ResponseEntity<>(new MyResponseEntity("Ответ на поле не найден"), HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(fieldAnswerOptional.get());
     }
 
     @PostMapping
-    public FieldAnswer createFieldAnswer(@RequestBody FieldAnswer fieldAnswer) {
-        return fieldAnswerDataService.createFieldAnswer(fieldAnswer);
+    public ResponseEntity<FieldAnswer> createFieldAnswer(@RequestBody FieldAnswer fieldAnswer) {
+        return ResponseEntity.ok(fieldAnswerDataService.createFieldAnswer(fieldAnswer));
     }
 
     @PutMapping("/{id}")
-    public FieldAnswer updateFieldAnswer(@PathVariable int id, @RequestBody FieldAnswer fieldAnswer) {
-        return fieldAnswerDataService.updateFieldAnswer(id, fieldAnswer);
+    public ResponseEntity<FieldAnswer> updateFieldAnswer(@PathVariable int id, @RequestBody FieldAnswer fieldAnswer) {
+        return ResponseEntity.ok(fieldAnswerDataService.updateFieldAnswer(id, fieldAnswer));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteFieldAnswer(@PathVariable int id) {
+    public ResponseEntity<BaseEntity> deleteFieldAnswer(@PathVariable int id) {
         fieldAnswerDataService.deleteFieldAnswer(id);
+
+        return new ResponseEntity<>(new MyResponseEntity("Ответ на поле удален"), HttpStatus.OK);
     }
 }

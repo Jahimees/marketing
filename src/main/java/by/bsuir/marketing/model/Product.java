@@ -27,4 +27,8 @@ public class Product implements BaseEntity {
     @ManyToOne
     @JoinColumn(name = "idproduct_type")
     private ProductType productType;
+
+    @ManyToOne
+    @JoinColumn(name = "idaccount")
+    private Account account;
 }

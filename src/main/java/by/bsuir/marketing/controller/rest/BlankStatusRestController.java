@@ -1,24 +1,25 @@
 package by.bsuir.marketing.controller.rest;
 
+import by.bsuir.marketing.model.BaseEntity;
+import by.bsuir.marketing.model.BlankAnswer;
 import by.bsuir.marketing.model.BlankStatus;
+import by.bsuir.marketing.model.MyResponseEntity;
 import by.bsuir.marketing.service.BlankStatusDataService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/blank-status")
+@RequiredArgsConstructor
 public class BlankStatusRestController {
 
     private final BlankStatusDataService blankStatusDataService;
-
-    @Autowired
-    public BlankStatusRestController(BlankStatusDataService blankStatusDataService) {
-        this.blankStatusDataService = blankStatusDataService;
-    }
 
     @GetMapping
     public ResponseEntity<List<BlankStatus>> getAllBlankStatuses() {
@@ -27,34 +28,38 @@ public class BlankStatusRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BlankStatus> getBlankStatusById(@PathVariable int id) {
-        BlankStatus blankStatus = blankStatusDataService.getBlankStatusById(id);
-        if (blankStatus != null) {
-            return new ResponseEntity<>(blankStatus, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<BaseEntity> getBlankStatusById(@PathVariable int id) {
+        Optional<BlankStatus> blankStatusOptional = blankStatusDataService.getBlankStatusById(id);
+
+        if (blankStatusOptional.isEmpty()) {
+            return new ResponseEntity<>(new MyResponseEntity("Бланк статус не найден"), HttpStatus.NOT_FOUND);
         }
+
+        return new ResponseEntity<>(blankStatusOptional.get(), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<BlankStatus> createBlankStatus(@RequestBody BlankStatus blankStatus) {
         BlankStatus createdBlankStatus = blankStatusDataService.createBlankStatus(blankStatus);
-        return new ResponseEntity<>(createdBlankStatus, HttpStatus.CREATED);
+
+        return ResponseEntity.ok(createdBlankStatus);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BlankStatus> updateBlankStatus(@PathVariable int id, @RequestBody BlankStatus blankStatus) {
+    public ResponseEntity<BaseEntity> updateBlankStatus(@PathVariable int id, @RequestBody BlankStatus blankStatus) {
         BlankStatus updatedBlankStatus = blankStatusDataService.updateBlankStatus(id, blankStatus);
+
         if (updatedBlankStatus != null) {
-            return new ResponseEntity<>(updatedBlankStatus, HttpStatus.OK);
+            return ResponseEntity.ok(updatedBlankStatus);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new MyResponseEntity("Бланк статус не найден"), HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBlankStatus(@PathVariable int id) {
+    public ResponseEntity<BaseEntity> deleteBlankStatus(@PathVariable int id) {
         blankStatusDataService.deleteBlankStatus(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        return new ResponseEntity<>(new MyResponseEntity("Бланк статус удален"), HttpStatus.OK);
     }
 }

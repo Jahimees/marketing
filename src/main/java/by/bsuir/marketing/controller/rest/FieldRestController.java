@@ -1,45 +1,54 @@
 package by.bsuir.marketing.controller.rest;
 
+import by.bsuir.marketing.model.BaseEntity;
 import by.bsuir.marketing.model.Field;
+import by.bsuir.marketing.model.MyResponseEntity;
 import by.bsuir.marketing.service.FieldDataService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/fields")
+@RequiredArgsConstructor
 public class FieldRestController {
 
     private final FieldDataService fieldDataService;
 
-    @Autowired
-    public FieldRestController(FieldDataService fieldDataService) {
-        this.fieldDataService = fieldDataService;
-    }
-
     @GetMapping
-    public List<Field> getAllFields() {
-        return fieldDataService.getAllFields();
+    public ResponseEntity<List<Field>> getAllFields() {
+        return ResponseEntity.ok(fieldDataService.getAllFields());
     }
 
     @GetMapping("/{id}")
-    public Field getFieldById(@PathVariable int id) {
-        return fieldDataService.getFieldById(id);
+    public ResponseEntity<BaseEntity> getFieldById(@PathVariable int id) {
+        Optional<Field> fieldOptional = fieldDataService.getFieldById(id);
+
+        if (fieldOptional.isEmpty()) {
+            return new ResponseEntity<>(new MyResponseEntity("Поле не найдено"), HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(fieldOptional.get());
     }
 
     @PostMapping
-    public Field createField(@RequestBody Field field) {
-        return fieldDataService.createField(field);
+    public ResponseEntity<Field> createField(@RequestBody Field field) {
+        return ResponseEntity.ok(fieldDataService.createField(field));
     }
 
     @PutMapping("/{id}")
-    public Field updateField(@PathVariable int id, @RequestBody Field field) {
-        return fieldDataService.updateField(id, field);
+    public ResponseEntity<Field> updateField(@PathVariable int id, @RequestBody Field field) {
+        return ResponseEntity.ok(fieldDataService.updateField(id, field));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteField(@PathVariable int id) {
+    public ResponseEntity<BaseEntity> deleteField(@PathVariable int id) {
         fieldDataService.deleteField(id);
+
+        return new ResponseEntity<>(new MyResponseEntity("Поле удалено"), HttpStatus.OK);
     }
 }
