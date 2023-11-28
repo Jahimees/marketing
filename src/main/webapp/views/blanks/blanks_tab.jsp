@@ -20,61 +20,10 @@
 <link href="https://cdn.datatables.net/v/dt/dt-1.13.6/fh-3.4.0/sb-1.5.0/sp-2.2.0/datatables.min.css"
       rel="stylesheet">
 <script src="https://cdn.datatables.net/v/dt/dt-1.13.6/fh-3.4.0/sb-1.5.0/sp-2.2.0/datatables.min.js"></script>
-
+<script src="../../js/blank.js"></script>
+<script src="../../js/products.js"></script>
 <script>
     $(document).ready(() => {
-        let createTabCache;
-        let viewTabCache;
-        let templatesTabCache;
-
-        $("#create-blank-btn").unbind()
-        $("#create-blank-btn").on("click", function () {
-            if (typeof createTabCache === "undefined") {
-                $.ajax({
-                    method: "get",
-                    url: "/blanks/create",
-                    contentType: "text/html",
-                    async: false,
-                    success: (data) => {
-                        createTabCache = data;
-                    }
-                })
-            }
-            $("#blank-working-space").html(createTabCache)
-        })
-
-        $("#view-blanks-btn").unbind()
-        $("#view-blanks-btn").on("click", function () {
-            if (typeof viewTabCache === "undefined") {
-                $.ajax({
-                    method: "get",
-                    url: "/blanks/view",
-                    contentType: "text/html",
-                    async: false,
-                    success: (data) => {
-                        viewTabCache = data;
-                    }
-                })
-            }
-
-            $("#blank-working-space").html(viewTabCache);
-        })
-
-        $("#templates-btn").unbind();
-        $("#templates-btn").on("click", function () {
-            if (typeof templatesTabCache === "undefined") {
-                $.ajax({
-                    method: "get",
-                    url: "/blanks/templates",
-                    contentType: "text/html",
-                    async: false,
-                    success: (data) => {
-                        templatesTabCache = data;
-                    }
-                })
-            }
-
-            $("#blank-working-space").html(templatesTabCache);
-        })
+        initBlankTab();
     })
 </script>

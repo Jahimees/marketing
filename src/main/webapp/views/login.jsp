@@ -19,7 +19,7 @@
                     <br>
                     <label for="password-input">Пароль</label>
                     <br>
-                    <input id="password-input" name="password" required>
+                    <input id="password-input" type="password" name="password" required>
                     <hr>
                     <button class="simple-btn btn-gray" type="submit">Авторизоваться</button>
                     <br>

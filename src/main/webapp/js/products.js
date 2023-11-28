@@ -21,8 +21,9 @@
             })
         })
 
+        $("#confirm-create-product-btn").unbind()
         $("#confirm-create-product-btn").on("click", function () {
-            let name = $productNameInput.text();
+            let name = $productNameInput.val();
             let about = $aboutProductInput.val();
             let flag = true;
 
@@ -47,9 +48,12 @@
                     productType: {
                         idProductType: $productTypeSelect.val()
                     },
-                    account: authenticatedUser
+                    account: {
+                        idAccount: authenticatedUser.idAccount
+                    }
                 }
 
+                console.log(newProductObj)
                 createProduct(newProductObj)
             }
         })
@@ -66,7 +70,7 @@
             data: JSON.stringify(newProductObj),
             success: (data) => {
                 $("#createProductModal").hide()
-                pushProductToCache(data);
+                reloadProducts()
                 fillProductsTable()
                 callMessagePopup("Сохранено", "Новый продукт успешно создан")
             },
@@ -77,11 +81,14 @@
     }
 
     function loadProducts() {
+        let products
         if (typeof productsCache === "undefined") {
-            reloadProducts();
+            products = reloadProducts();
+        } else {
+            products = productsCache
         }
 
-        return productsCache;
+        return products;
     }
 
     function reloadProducts() {
@@ -102,10 +109,6 @@
         return productsCache;
     }
 
-    function pushProductToCache(newProduct) {
-        productsCache.push(newProduct);
-    }
-
     function loadProductTypes() {
         if (typeof productTypesCache === "undefined") {
             $.ajax({
@@ -113,6 +116,7 @@
                 url: "/api/product-types",
                 contentType: "application/json",
                 dataType: "json",
+                async: false,
                 success: (data) => {
                     productTypesCache = data;
                 },
@@ -143,7 +147,36 @@
             product.productType.name,
             product.about,
             new Date(product.creationDate).toLocaleDateString('ru'),
-            "<div class='simple-btn btn-gray' onclick=''>Подробнее</div>",
+            "<div onclick='' class='simple-btn btn-gray' onclick=''>Подробнее</div>",
+            "<div onclick='callConfirmDeleteProduct(" + product.idProduct + ")' class='simple-btn btn-gray' onclick=''>Удалить</div>",
         ]).draw();
+    }
+
+    function callConfirmDeleteProduct(idProduct) {
+        callMessagePopup("Удаление", "Вы действительно хотите удалить товар?");
+        $("#decline-message-btn").show();
+        $("#confirm-message-btn").on("click", function () {
+            deleteProduct(idProduct)
+        });
+    }
+
+    function deleteProduct(idProduct) {
+        $("#messageModal").hide();
+        $.ajax({
+            method: "delete",
+            url: "/api/products/" + idProduct,
+            contentType: "application/json",
+            async: false,
+            dataType: "json",
+            success: (data) => {
+
+                callMessagePopup("Удален", "Товар успешно удален!")
+                reloadProducts()
+                fillProductsTable()
+            },
+            error: () => {
+                callMessagePopup("Ошибка", "Невозможно удалить товар!")
+            }
+        })
     }
 }

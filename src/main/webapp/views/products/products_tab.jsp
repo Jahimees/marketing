@@ -11,6 +11,7 @@
                 <th>Описание</th>
                 <th>Дата создания</th>
                 <th>Подробнее</th>
+                <th>Удалить</th>
             </tr>
             </thead>
             <tbody id="products_table-tbody">

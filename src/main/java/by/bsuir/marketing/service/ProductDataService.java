@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,19 @@ public class ProductDataService implements DataService<Product>{
     }
 
     public Product createProduct(Product product) {
+        if (product.getAccount() == null) {
+            throw new IllegalArgumentException("Account cannot be null");
+        }
+
+        Optional<Account> accountOptional = accountDataService.getAccountById(product.getAccount().getIdAccount());
+
+        if (accountOptional.isEmpty()) {
+            throw new NotFoundException("Account not found");
+        }
+
+        product.setAccount(accountOptional.get());
+        product.setCreationDate(new Date());
+
         return productRepository.save(product);
     }
 

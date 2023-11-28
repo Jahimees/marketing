@@ -3,6 +3,7 @@
     const $confirmEditBtn = $("#confirmEditBtn");
 
     function repairDefaultMessagePopup() {
+        $("#confirm-message-btn").unbind();
         $("#decline-message-btn").css("display", "none");
         $confirmMessageBtn.attr("data-bs-dismiss", "modal");
         $confirmMessageBtn.attr("onclick", "");

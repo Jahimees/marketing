@@ -15,12 +15,16 @@
 
 </head>
 <body>
-<div class="background-layer">
+<div class="background-layer" style="height: auto">
     <header class="white-block w-80 center-box">
         <div class="left-right-container">
             <div class="inline-flex-box horizontal-center" style="margin: auto 0; align-content: center">
-                <a href="/"><div class="simple-btn btn-gray">Главная страница</div></a>
-                <a href="/"><div class="simple-btn btn-gray">Поиск анкет</div></a>
+                <a href="/">
+                    <div class="simple-btn btn-gray">Главная страница</div>
+                </a>
+                <a href="/">
+                    <div class="simple-btn btn-gray">Поиск анкет</div>
+                </a>
             </div>
             <div>
                 <a href="/account">
@@ -33,7 +37,27 @@
         </div>
     </header>
     <div class="white-block w-80 center-box m-t-20px">
-        Общая информация о ресурсе. Красиво оформлено
+        <div class="w-60 center-box">
+            <div class="blue-line">Сервис маркетинговых исследований</div>
+            <div class="big-text">На данном ресурсе специализированные маркетологи имеют возможность
+                создавать свои собственные анкеты для проведения исследований. Для того, чтобы стать участником нашей
+                программы, отправьте письмо на email: <i>someemail@m.com</i></div>
+            <img src="../img/main1.jpg" style="width: 700px" class="center-box">
+            <div class="big-text">Пользователи сети смогут проходить ваши анкеты в режиме онлайн! Вам больше не придётся
+                часами ходить по улицам и собирать данные. Пусть потребители сами приходят к нам и проходят Ваши анкеты!
+                Вся информация будет доступна в Вашем личном кабинете!
+            </div>
+            <div class="blue-line">
+                Более 0 довольных клиентов!
+            </div>
+            <div class="big-text">
+                Потребителям же, мы предлагаем уникальную возможность принять участие в многочисленных исследованиях без
+                регистрации и совершенно бесплатно! Просто переходите во вкладку "Поиск анкет" и помогайте своим любимым
+                брендам стать лучше!
+            </div>
+            <img src="../img/main2.gif" style="width: 700px" class="center-box">
+            Права не защищены 2023 г. Курсовое проектирование студента БГУИР Антоновича Александра
+        </div>
     </div>
 </div>
 
