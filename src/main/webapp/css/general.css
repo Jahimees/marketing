@@ -45,6 +45,22 @@ a {
     border-radius: 10px;
 }
 
+.delete-btn {
+    padding: 5px 10px;
+    color: black;
+    text-align: center;
+    cursor: pointer;
+    width: 50px;
+    font-family: SansSerif;
+    margin-right: 10px;
+    border-radius: 10px;
+}
+
+.delete-btn:hover {
+    background-color: #666666;
+    color: white;
+}
+
 .btn-gray {
     background-color: #EFEFEF;
     border: none;
@@ -148,6 +164,10 @@ div {
 
 .inline-flex-box {
     display: inline-flex;
+}
+
+.inline-block {
+    display: inline-block;
 }
 
 .horizontal-center {

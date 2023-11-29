@@ -27,6 +27,10 @@ public class FieldDataService implements DataService<Field> {
         return fieldRepository.save(field);
     }
 
+    public List<Field> createAll(List<Field> fieldList) {
+        return fieldRepository.saveAllAndFlush(fieldList);
+    }
+
     public Field updateField(int id, Field field) {
         Field existingField = fieldRepository.findById(id).orElse(null);
         if (existingField != null) {

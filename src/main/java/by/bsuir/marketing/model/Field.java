@@ -1,12 +1,27 @@
 package by.bsuir.marketing.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Table(name = "field")
 @Data
+@NoArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "idField")
 public class Field implements BaseEntity {
+
+    private static final long serialVersionUID = 1l;
+
+    public Field(int idField) {
+        this.idField = idField;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,11 +35,16 @@ public class Field implements BaseEntity {
     @JoinColumn(name = "idfield_type")
     private FieldType fieldType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idblank")
+    @JsonBackReference
     private Blank blank;
 
     @ManyToOne
     @JoinColumn(name = "idtemplate")
     private Template template;
+
+    @OneToMany(mappedBy = "field", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private List<FieldVariant> fieldVariants;
 }

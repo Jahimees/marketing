@@ -1,4 +1,6 @@
 package by.bsuir.marketing.model;
 
-public interface BaseEntity {
+import java.io.Serializable;
+
+public interface BaseEntity extends Serializable {
 }

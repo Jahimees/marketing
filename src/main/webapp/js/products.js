@@ -11,7 +11,6 @@
 
         $("#create-product-btn").unbind()
         $("#create-product-btn").on("click", function () {
-            // callMessagePopup("Как", "Дела");
             $("#createProductModal").modal('show');
 
             $("#product-type-select").html('');
@@ -53,13 +52,11 @@
                     }
                 }
 
-                console.log(newProductObj)
                 createProduct(newProductObj)
             }
         })
     }
 
-    // TODO ты остановился тута. не тестилося.
     function createProduct(newProductObj) {
         $.ajax({
             method: "post",
@@ -102,7 +99,7 @@
                 productsCache = data;
             },
             error: () => {
-                callMessagePopup("Ошибка", "Невозможно загрузить спрачовник ваших продуктов")
+                callMessagePopup("Ошибка", "Невозможно загрузить справочник ваших продуктов")
             }
         })
 

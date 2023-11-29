@@ -8,6 +8,8 @@ import lombok.Data;
 @Table(name = "field_type")
 public class FieldType implements BaseEntity {
 
+    private static final long serialVersionUID = 1l;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idfield_type")

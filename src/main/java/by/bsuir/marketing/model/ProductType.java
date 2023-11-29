@@ -8,6 +8,8 @@ import lombok.Data;
 @Data
 public class ProductType implements BaseEntity {
 
+    private static final long serialVersionUID = 1l;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idproduct_type")

@@ -8,6 +8,8 @@ import lombok.Data;
 @Data
 public class AccountStatus implements BaseEntity {
 
+    private static final long serialVersionUID = 1l;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idaccount_status")

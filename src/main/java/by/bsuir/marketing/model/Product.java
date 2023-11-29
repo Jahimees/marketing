@@ -10,6 +10,8 @@ import java.util.Date;
 @Data
 public class Product implements BaseEntity {
 
+    private static final long serialVersionUID = 1l;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idproduct")
