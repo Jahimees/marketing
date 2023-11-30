@@ -42,13 +42,12 @@ public class BlankRestController {
     @PostMapping
     public ResponseEntity<Blank> createBlank(@RequestBody Blank blank) {
         Blank createdBlank = blankDataService.createBlank(blank);
-//        return ResponseEntity.ok(new Blank());
         return new ResponseEntity<>(createdBlank, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Blank> updateBlank(@PathVariable int id, @RequestBody Blank blank) {
-        Blank updatedBlank = blankDataService.updateBlank(id, blank);
+        Blank updatedBlank = blankDataService.createBlank(blank);
         if (updatedBlank != null) {
             return new ResponseEntity<>(updatedBlank, HttpStatus.OK);
         } else {

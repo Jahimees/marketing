@@ -23,10 +23,3 @@
 
     <div id="save-blank-btn" class="simple-btn btn-gray inline-block">Сохранить</div>
 </div>
-
-<script>
-    $(document).ready(() => {
-        initCreateTab();
-        //idEditBlank?????
-    })
-</script>

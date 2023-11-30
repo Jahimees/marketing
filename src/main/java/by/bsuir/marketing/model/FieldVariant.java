@@ -2,6 +2,7 @@ package by.bsuir.marketing.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -22,7 +23,10 @@ public class FieldVariant implements BaseEntity {
     @JoinColumn(name = "idfield")
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
+//    @Transient
+    @JsonIgnoreProperties("fieldVariants")
     private Field field;
+
 
     @Column(name = "text")
     private String text;

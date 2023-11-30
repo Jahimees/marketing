@@ -7,9 +7,7 @@ import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +38,6 @@ public class BlankDataService implements DataService<Blank> {
         return blankRepository.findById(id);
     }
 
-    //batch query
     @Transactional
     public Blank createBlank(Blank blank) {
         if (blank.getAccount() == null) {
@@ -80,6 +77,12 @@ public class BlankDataService implements DataService<Blank> {
         }
 
         blank.setCreationDate(new Date());
+
+        Optional<Blank> blankOptional = blankRepository.findById(blank.getIdBlank());
+        if (blankOptional.isPresent()) {
+            blank.setCreationDate(blankOptional.get().getCreationDate());
+        }
+
         Blank createdBlank = blankRepository.saveAndFlush(blank);
 
         if (blank.getFields() == null) {
@@ -94,10 +97,15 @@ public class BlankDataService implements DataService<Blank> {
             field.setBlank(new Blank(createdBlank.getIdBlank()));
         });
 
+        Set<Integer> keepFieldIds = new HashSet<>();
         List<Field> fieldList = fieldDataService.createAll(blank.getFields());
-        blank.setFields(fieldList);
+        fieldList.forEach(keepField -> {
+            keepFieldIds.add(keepField.getIdField());
+        });
 
-        fieldList.forEach(field -> {
+        fieldDataService.deleteAllByBlankAndNotInIdSet(createdBlank, keepFieldIds);
+
+        blank.getFields().forEach(field -> {
             if (field.getFieldVariants() == null) {
                 throw new IllegalArgumentException("Field variants cannot be null");
             }
@@ -106,24 +114,21 @@ public class BlankDataService implements DataService<Blank> {
                 variant.setField(new Field(field.getIdField()));
             });
 
-            field.setFieldVariants(fieldVariantDataService.createAll(field.getFieldVariants()));
+            List<FieldVariant> fieldVariants = fieldVariantDataService.createAll(field.getFieldVariants());
+            field.setFieldVariants(fieldVariants);
+
+            Set<Integer> keepFieldVariantIds = new HashSet<>();
+
+            fieldVariants.forEach(fieldVariant -> {
+                keepFieldVariantIds.add(fieldVariant.getIdFieldVariant());
+            });
+
+            fieldVariantDataService.deleteAllByFieldAndNotInIdSet(field, keepFieldVariantIds);
         });
 
-        return blank;
-//        return blankRepository.save(blank);
-    }
+        blank.setFields(fieldList);
 
-    public Blank updateBlank(int id, Blank blank) {
-        Blank existingBlank = blankRepository.findById(id).orElse(null);
-        if (existingBlank != null) {
-            existingBlank.setBlankStatus(blank.getBlankStatus());
-            existingBlank.setName(blank.getName());
-            existingBlank.setCreationDate(blank.getCreationDate());
-            existingBlank.setProduct(blank.getProduct());
-            existingBlank.setAccount(blank.getAccount());
-            return blankRepository.save(existingBlank);
-        }
-        return null;
+        return blank;
     }
 
     public void deleteBlank(int id) {

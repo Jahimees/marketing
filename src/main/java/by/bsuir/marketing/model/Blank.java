@@ -1,6 +1,7 @@
 package by.bsuir.marketing.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -49,5 +50,7 @@ public class Blank implements BaseEntity {
 
     @OneToMany(mappedBy = "blank", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonManagedReference
+    @JsonIgnoreProperties("blank")
+//    @Transient
     private List<Field> fields;
 }

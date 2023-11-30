@@ -19,6 +19,7 @@
                 })
             }
             $("#blank-working-space").html(createTabCache)
+            initCreateTab();
         })
 
         $("#view-blanks-btn").unbind()
@@ -60,26 +61,82 @@
     let blankStatusesCache;
     let fieldTypesCache;
 
-    function initCreateTab() {
-        questionCounter = 0;
+    function initCreateTab(idBlank) {
+        let editingBlank;
+        if (typeof idBlank != "undefined") {
+            $.ajax({
+                method: "get",
+                url: "/api/blanks/" + idBlank,
+                contentType: "application/json",
+                dataType: "json",
+                async: false,
+                success: (data) => {
+                    editingBlank = data;
+                    callMessagePopup("Успех", JSON.stringify(data));
+                },
+                error: () => {
+                    callMessagePopup("Ошибка", "Невозможно загрузить анкету")
+                }
+            })
+        }
+
         $("#question-container").html('');
-        $("#blank-name-input").val('');
+        questionCounter = 0;
 
-        initBlankStatusRadio()
-        initProductSelect();
+        if (typeof editingBlank === "undefined") {
+            $("#blank-name-input").val('');
 
-        $("#save-blank-btn").unbind();
-        $("#save-blank-btn").on('click', function () {
-            saveBlank();
-        })
+            initBlankStatusRadio()
+            initProductSelect();
 
-        $("#add-question-btn").unbind();
-        $("#add-question-btn").on('click', function () {
-            createNewQuestion();
-        })
+            $("#save-blank-btn").unbind();
+            $("#save-blank-btn").on('click', function () {
+                saveBlank();
+            })
+
+            $("#add-question-btn").unbind();
+            $("#add-question-btn").on('click', function () {
+                createNewQuestion();
+            })
+        } else {
+            $("#blank-name-input").val(editingBlank.name);
+
+            initBlankStatusRadio(editingBlank.blankStatus.idBlankStatus)
+            initProductSelect(editingBlank.product?.idProduct);
+
+            $("#save-blank-btn").unbind();
+            $("#save-blank-btn").on('click', function () {
+                saveBlank(editingBlank.idBlank);
+            })
+
+            $("#add-question-btn").unbind();
+            $("#add-question-btn").on('click', function () {
+                createNewQuestion();
+            })
+
+            editingBlank.fields.forEach(field => {
+                const nQuestion = createNewQuestion();
+                $("#question-" + nQuestion).attr("id-question", field.idField)
+                $("#question-" + nQuestion + " > textarea").val(field.text);
+
+                $("#radio-" + nQuestion + "-" + field.fieldType.idFieldType).prop('checked', true);
+                $("#radio-" + nQuestion + "-" + field.fieldType.idFieldType).change();
+
+                if (typeof field.fieldVariants !== "undefined") {
+                    field.fieldVariants.forEach(fieldVariant => {
+                        const inputBlock = addAnswer(nQuestion)
+                        inputBlock.attr("id-variant", fieldVariant.idFieldVariant);
+                        // answerBlock;
+
+                        inputBlock.val(fieldVariant.text);
+                    })
+                }
+
+            })
+        }
     }
 
-    function saveBlank() {
+    function saveBlank(idBlank) {
         if ($("div[q-number]").length === 0) {
             callMessagePopup("Ошибка", "Добавьте хотя бы один вопрос!")
             return;
@@ -95,6 +152,7 @@
                 const qNumber = $(field).attr('q-number');
 
                 const fieldText = $(field).children('textarea').val();
+                const idField = $(field).attr("id-question");
 
                 if (fieldText.trim().length < 1 || fieldText.trim().length > 500) {
                     isInvalidQuestion = true;
@@ -113,10 +171,12 @@
                     Array.from($("input[name='answer-" + qNumber + "']")).forEach(variant => {
                         if (typeof variant !== "undefined") {
                             const variantText = $(variant).val().trim();
+                            const idVariant = $(variant).attr("id-variant");
                             if (variantText.length < 1 || variantText.length > 100) {
                                 isInvalidVariant = true;
                             } else {
                                 variants.push({
+                                    idFieldVariant: typeof idVariant !== "undefined" ? idVariant : undefined,
                                     text: variantText
                                 });
                             }
@@ -125,6 +185,7 @@
                 }
 
                 let newField = {
+                    idField: typeof idField !== "undefined" ? idField : undefined,
                     text: fieldText,
                     fieldType: {
                         idFieldType: idFieldType
@@ -165,6 +226,7 @@
         const accountId = authenticatedUser.idAccount;
 
         const newBlank = {
+            idBlank: typeof idBlank !== "undefined" ? idBlank : 0,
             name: blankName,
             blankStatus: {
                 idBlankStatus: blankStatusId
@@ -178,21 +240,42 @@
             fields: fields
         }
 
-        $.ajax({
-            method: "post",
-            url: "/api/blanks",
-            contentType: "application/json",
-            dataType: "json",
-            data: JSON.stringify(newBlank),
-            success: (data) => {
-                callMessagePopup("Анкета сохранена", "Анкета успешно сохранена!")
-                $("#blank-name-input").val('');
-                $("#question-container").html('');
-            },
-            error: () => {
-                callMessagePopup("Ошибка", "Не удалось сохранить анкету!")
-            }
-        })
+        if (typeof idBlank !== "undefined") {
+            console.log(newBlank)
+            $.ajax({
+                method: "put",
+                url: "/api/blanks/" + idBlank,
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify(newBlank),
+                success: (data) => {
+                    callMessagePopup("Анкета сохранена", "Анкета успешно сохранена!")
+                    $("#blank-name-input").val('');
+                    $("#question-container").html('');
+                    console.log(data);
+                },
+                error: () => {
+                    callMessagePopup("Ошибка", "Не удалось сохранить анкету!")
+                }
+            })
+        } else {
+
+            $.ajax({
+                method: "post",
+                url: "/api/blanks",
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify(newBlank),
+                success: (data) => {
+                    callMessagePopup("Анкета сохранена", "Анкета успешно сохранена!")
+                    $("#blank-name-input").val('');
+                    $("#question-container").html('');
+                },
+                error: () => {
+                    callMessagePopup("Ошибка", "Не удалось сохранить анкету!")
+                }
+            })
+        }
     }
 
     let questionIds = [];
@@ -267,6 +350,8 @@
                 }
             })
         })
+
+        return questionCounter;
     }
 
     function addAnswer(questionId) {
@@ -282,6 +367,8 @@
         const removeAnswer = $("<div onclick='dropAnswer(this)' class='delete-btn'>X</div>")
         answerBlock.append(newInput).append(removeAnswer);
         answersBlock.append(answerBlock);
+
+        return newInput;
     }
 
     function dropAnswer(answerBlock) {
@@ -341,7 +428,11 @@
         return fieldTypesCache;
     }
 
-    function initBlankStatusRadio() {
+    function initBlankStatusRadio(blankStatusId) {
+        if (typeof blankStatusId === "undefined") {
+            blankStatusId = 1;
+        }
+
         let blankStatuses = loadBlankStatusesCache();
 
         $("#blank-status-radiogroup").html('')
@@ -349,7 +440,7 @@
         blankStatuses.forEach(blankStatus => {
             let radio;
             let div = $("<div style='padding: 0 10px; display: inline-flex'></div>");
-            if (blankStatus.idBlankStatus === 1) {
+            if (blankStatus.idBlankStatus === blankStatusId) {
                 radio = $("<input id='status-" + blankStatus.idBlankStatus + "' type='radio' name='status' " +
                     "value='" + blankStatus.idBlankStatus + "' checked>")
             } else {
@@ -367,7 +458,7 @@
         })
     }
 
-    function initProductSelect() {
+    function initProductSelect(idProduct) {
         let products = loadProducts();
         const $productSelect = $("#product-select");
 
@@ -377,6 +468,10 @@
             let option = $("<option value='" + product.idProduct + "'>" + product.name + "</option>");
             $productSelect.append(option);
         })
+
+        if (typeof idProduct !== "undefined") {
+            $productSelect.val(idProduct);
+        }
     }
 
     let blanksCache;
@@ -449,17 +544,31 @@
     }
 
     function openEditBlankTab(idBlank) {
-        $.ajax({
-            method: "get",
-            url: "/blanks/edit/" + idBlank,
-            contentType: "html/text",
-            success: (data) => {
-                $("#blank-working-space").html(data)
-            },
-            error: () => {
-                callMessagePopup("Ошибка", "Что-то пошло не так. Невозможно загрузить редактирование анкеты")
-            }
-        })
+        console.log("INIT")
+        if (typeof createTabCache === "undefined") {
+            $.ajax({
+                method: "get",
+                url: "/blanks/create",
+                contentType: "text/html",
+                async: false,
+                success: (data) => {
+                    createTabCache = data;
+                }
+            })
+        }
+        $("#blank-working-space").html(createTabCache)
+        initCreateTab(idBlank);
+        // $.ajax({
+        //     method: "get",
+        //     url: "/blanks/edit/" + idBlank,
+        //     contentType: "html/text",
+        //     success: (data) => {
+        //         $("#blank-working-space").html(data)
+        //     },
+        //     error: () => {
+        //         callMessagePopup("Ошибка", "Что-то пошло не так. Невозможно загрузить редактирование анкеты")
+        //     }
+        // })
     }
 
     function callConfirmDeleteBlank(idBlank) {

@@ -1,13 +1,14 @@
 package by.bsuir.marketing.service;
 
+import by.bsuir.marketing.model.Blank;
 import by.bsuir.marketing.model.Field;
 import by.bsuir.marketing.repository.FieldRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +42,10 @@ public class FieldDataService implements DataService<Field> {
             return fieldRepository.save(existingField);
         }
         return null;
+    }
+
+    public void deleteAllByBlankAndNotInIdSet(Blank blank, Set<Integer> keepFieldSet) {
+        fieldRepository.deleteAllByBlankAndIdFieldNotIn(blank, keepFieldSet);
     }
 
     public void deleteField(int id) {
