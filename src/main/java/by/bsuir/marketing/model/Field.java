@@ -1,6 +1,8 @@
 package by.bsuir.marketing.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +13,6 @@ import java.util.List;
 @Table(name = "field")
 @Data
 @NoArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "idField")
 public class Field implements BaseEntity {
 
     private static final long serialVersionUID = 1l;
@@ -38,9 +39,6 @@ public class Field implements BaseEntity {
     @JsonIgnoreProperties("fields")
 //    @Transient
     private Blank blank;
-
-//    @Column(name = "idblank")
-//    private Integer idBlank;
 
     @ManyToOne
     @JoinColumn(name = "idtemplate")

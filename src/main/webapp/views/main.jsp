@@ -16,26 +16,7 @@
 </head>
 <body>
 <div class="background-layer" style="height: auto">
-    <header class="white-block w-80 center-box">
-        <div class="left-right-container">
-            <div class="inline-flex-box horizontal-center" style="margin: auto 0; align-content: center">
-                <a href="/">
-                    <div class="simple-btn btn-gray">Главная страница</div>
-                </a>
-                <a href="/">
-                    <div class="simple-btn btn-gray">Поиск анкет</div>
-                </a>
-            </div>
-            <div>
-                <a href="/account">
-                    <div class="inline-flex-box">
-                        <div class="big-text" style="margin-right: 10px">Личный кабинет</div>
-                        <img src="../img/account.png" width="75px" style="border-radius: 100px">
-                    </div>
-                </a>
-            </div>
-        </div>
-    </header>
+    <jsp:include page="common/main_header.jsp"/>
     <div class="white-block w-80 center-box m-t-20px">
         <div class="w-60 center-box">
             <div class="blue-line">Сервис маркетинговых исследований</div>

@@ -38,6 +38,10 @@ public class FieldAnswerDataService {
         return null;
     }
 
+    public List<FieldAnswer> createAll(List<FieldAnswer> fieldAnswers) {
+        return fieldAnswerRepository.saveAllAndFlush(fieldAnswers);
+    }
+
     public void deleteFieldAnswer(int id) {
         fieldAnswerRepository.deleteById(id);
     }

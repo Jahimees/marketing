@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/field-answers")
+@RequestMapping("/api/field-answers")
 @RequiredArgsConstructor
 public class FieldAnswerRestController {
 

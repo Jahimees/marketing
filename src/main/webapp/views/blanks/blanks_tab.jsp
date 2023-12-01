@@ -17,6 +17,8 @@
     </div>
 </div>
 
+<jsp:include page="../common/blank_analytics_popup.jsp"/>
+
 <link href="https://cdn.datatables.net/v/dt/dt-1.13.6/fh-3.4.0/sb-1.5.0/sp-2.2.0/datatables.min.css"
       rel="stylesheet">
 <script src="https://cdn.datatables.net/v/dt/dt-1.13.6/fh-3.4.0/sb-1.5.0/sp-2.2.0/datatables.min.js"></script>

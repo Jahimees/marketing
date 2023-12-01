@@ -20,7 +20,14 @@ public class BlankDataService implements DataService<Blank> {
     private final FieldVariantDataService fieldVariantDataService;
     private final AccountDataService accountDataService;
 
-    public List<Blank> getAllBlanks() {
+    public List<Blank> getAllBlanks(boolean isPublic) {
+
+        if (isPublic) {
+            BlankStatus blankStatus = blankStatusDataService.getBlankStatusById(2).get();
+
+            return blankRepository.findAllByBlankStatus(blankStatus);
+        }
+
         return blankRepository.findAll();
     }
 
@@ -98,8 +105,8 @@ public class BlankDataService implements DataService<Blank> {
         });
 
         Set<Integer> keepFieldIds = new HashSet<>();
-        List<Field> fieldList = fieldDataService.createAll(blank.getFields());
-        fieldList.forEach(keepField -> {
+        blank.setFields(fieldDataService.createAll(blank.getFields()));
+        blank.getFields().forEach(keepField -> {
             keepFieldIds.add(keepField.getIdField());
         });
 
@@ -125,8 +132,6 @@ public class BlankDataService implements DataService<Blank> {
 
             fieldVariantDataService.deleteAllByFieldAndNotInIdSet(field, keepFieldVariantIds);
         });
-
-        blank.setFields(fieldList);
 
         return blank;
     }

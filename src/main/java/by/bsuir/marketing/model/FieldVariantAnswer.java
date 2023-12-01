@@ -1,5 +1,7 @@
 package by.bsuir.marketing.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.Fetch;
@@ -20,8 +22,10 @@ public class FieldVariantAnswer implements BaseEntity {
     @JoinColumn(name = "idfield_variant")
     private FieldVariant fieldVariant;
 
-    @ManyToOne
     @JoinColumn(name = "idfield_answer")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
+    @JsonIgnoreProperties("fieldVariantAnswers")
     private FieldAnswer fieldAnswer;
 
     @Column(name = "text")

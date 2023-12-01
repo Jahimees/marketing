@@ -72,7 +72,6 @@
                 async: false,
                 success: (data) => {
                     editingBlank = data;
-                    callMessagePopup("Успех", JSON.stringify(data));
                 },
                 error: () => {
                     callMessagePopup("Ошибка", "Невозможно загрузить анкету")
@@ -226,7 +225,7 @@
         const accountId = authenticatedUser.idAccount;
 
         const newBlank = {
-            idBlank: typeof idBlank !== "undefined" ? idBlank : 0,
+            // idBlank: typeof idBlank !== "undefined" ? idBlank : 0,
             name: blankName,
             blankStatus: {
                 idBlankStatus: blankStatusId
@@ -478,16 +477,8 @@
 
     ///////////VIEW TAB
     function initViewTab() {
-        reloadBlanks();
-        fillBlanksDataTable();
-    }
-
-    function loadBlanks() {
-        if (typeof blanksCache === "undefined") {
-            blanksCache = reloadBlanks();
-        }
-
-        return blanksCache;
+        reloadBlanks(authenticatedUser.idAccount);
+        fillBlanksDataTable(false);
     }
 
     function deleteBlankFromCache(idBlank) {
@@ -501,10 +492,17 @@
         blanksCache.splice(index, 1);
     }
 
-    function reloadBlanks() {
+    function reloadBlanks(idAccount) {
+        let url;
+        if (typeof idAccount !== "undefined") {
+            url = "/api/blanks?idAccount=" + idAccount;
+        } else {
+            url = "/api/blanks?isPublic=true";
+        }
+
         $.ajax({
             method: "get",
-            url: "/api/blanks?idAccount=" + authenticatedUser.idAccount,
+            url: url,
             dataType: "json",
             contentType: "application/json",
             async: false,
@@ -519,32 +517,139 @@
         return blanksCache;
     }
 
-    function fillBlanksDataTable() {
+    function fillBlanksDataTable(isSurvey) {
         const tableName = "blanks"
         const $dataTable = $("#" + tableName + "_table");
 
         destroyAndInitDataTable(tableName, $dataTable)
 
         blanksCache?.forEach(function (blank) {
-            addRowToBlanksDataTable(blank, tableName)
+            addRowToBlanksDataTable(blank, tableName, isSurvey)
         })
     }
 
-    function addRowToBlanksDataTable(blank, tableId) {
+    function addRowToBlanksDataTable(blank, tableId, isSurvey) {
         const tableName = tableId ? tableId : "default";
+
+        let openBtn;
+        let editBtn;
+        if (isSurvey) {
+            openBtn = "<a href='/survey/" + blank.idBlank + "' class='simple-btn btn-gray'>Пройти</a>"
+            editBtn = ''
+        } else {
+            openBtn = "<div class='simple-btn btn-gray' onclick='openBlankAnalytics(" + blank.idBlank + ")'>Подробнее</div>";
+            editBtn = "<div onclick='openEditBlankTab(" + blank.idBlank + ")' class='simple-btn btn-gray'>Редактировать</div>"
+        }
 
         $("#" + tableName + "_table").DataTable().row.add([
             blank.name,
             blank.blankStatus?.name,
             new Date(blank.creationDate).toLocaleDateString('ru'),
             typeof blank.product === "undefined" || blank.product === null ? "Не привязан" : blank.product.name,
-            "<div onclick='openEditBlankTab(" + blank.idBlank + ")' class='simple-btn btn-gray' onclick=''>Подробнее</div>",
+            openBtn,
+            editBtn,
             "<div onclick='callConfirmDeleteBlank(" + blank.idBlank + ")' class='simple-btn btn-gray' onclick=''>Удалить</div>",
         ]).draw();
     }
 
+    function openBlankAnalytics(idBlank) {
+
+        let currentBlank
+        blanksCache.forEach(blank => {
+            if (idBlank == blank.idBlank) {
+                currentBlank = blank;
+            }
+        })
+
+        $("#blankAnalyticsModalLabel").text("Информация об анкете \"" + currentBlank.name + "\"");
+
+        $("#blank-analytics-placeholder").html('')
+
+        const answers = loadAnswersByIdBlank(idBlank);
+        currentBlank.fields.forEach(field => {
+            const answerBlock = $("<div></div>")
+            const questionText = $("<div><b>Вопрос: " + field.text + "</b></div>");
+            answerBlock.append(questionText)
+
+            const fieldAnswerCounter = new Map();
+
+            let textAnswersBlock = $("<div style='height: 150px; overflow: scroll'></div>")
+            if (field.fieldType.idFieldType === 3) {
+                answerBlock.append(textAnswersBlock);
+            }
+
+            answers.forEach(answer => {
+                answer.fieldAnswers.forEach(fieldAnswer => {
+                    if (fieldAnswer.field.idField === field.idField) {
+
+                        if (field.fieldType.idFieldType === 3) {
+                            const textAnswerBlock = $("<div style='padding: 10px; height: 125px; background-color: #EFEFEF; margin-bottom: 10px; border-radius: 10px'></div>")
+                            textAnswerBlock.append("<div><b>" + answer.username + " "
+                                + new Date(answer.answerDate).toLocaleDateString('ru')
+                                + ":</b></div><div style='height: 100px'>" + fieldAnswer.answer + "</div>")
+
+                            textAnswersBlock.append(textAnswerBlock);
+                        } else {
+                            fieldAnswer.fieldVariantAnswers.forEach(fieldVariantAnswer => {
+                                let idFieldVariant = fieldVariantAnswer.fieldVariant.idFieldVariant;
+                                if (fieldAnswerCounter.has(idFieldVariant)) {
+                                    fieldAnswerCounter.set(idFieldVariant, fieldAnswerCounter.get(idFieldVariant) + 1);
+                                } else {
+                                    fieldAnswerCounter.set(idFieldVariant, 1);
+                                }
+                            })
+                        }
+                    }
+                })
+            })
+
+            console.log(fieldAnswerCounter)
+            fieldAnswerCounter.forEach((value, key) => {
+                const foundVariant = findFieldVariantById(currentBlank, key)
+                answerBlock.append("<div>" + foundVariant.text + ": " + value + "</div>")
+            })
+
+            answerBlock.append("<hr>")
+            $("#blank-analytics-placeholder").append(answerBlock)
+        })
+
+        $("#blankAnalyticsModal").modal('show');
+    }
+
+    function findFieldVariantById(currentBlank, idVariant) {
+        let foundVariant;
+
+        currentBlank.fields.forEach(field => {
+            field.fieldVariants.forEach(fieldVariant => {
+                if (fieldVariant.idFieldVariant == idVariant) {
+                    foundVariant = fieldVariant;
+                }
+            })
+        })
+
+        return foundVariant;
+    }
+
+    function loadAnswersByIdBlank(idBlank) {
+        let answers;
+        $.ajax({
+            method: "get",
+            url: "/api/blank-answers?idBlank=" + idBlank,
+            dataType: "json",
+            contentType: "application/json",
+            async: false,
+            success: (data) => {
+                answers = data;
+            },
+            error: () => {
+                callMessagePopup("Ошибка", "Невозможно загрузить ответы анкеты")
+            }
+        })
+
+        return answers;
+    }
+
     function openEditBlankTab(idBlank) {
-        console.log("INIT")
         if (typeof createTabCache === "undefined") {
             $.ajax({
                 method: "get",
@@ -558,17 +663,6 @@
         }
         $("#blank-working-space").html(createTabCache)
         initCreateTab(idBlank);
-        // $.ajax({
-        //     method: "get",
-        //     url: "/blanks/edit/" + idBlank,
-        //     contentType: "html/text",
-        //     success: (data) => {
-        //         $("#blank-working-space").html(data)
-        //     },
-        //     error: () => {
-        //         callMessagePopup("Ошибка", "Что-то пошло не так. Невозможно загрузить редактирование анкеты")
-        //     }
-        // })
     }
 
     function callConfirmDeleteBlank(idBlank) {
@@ -588,7 +682,7 @@
             success: () => {
                 $("#messageModal").modal('hide');
                 deleteBlankFromCache(idBlank);
-                fillBlanksDataTable();
+                fillBlanksDataTable(false);
             },
             error: () => {
                 $("#messageModal").modal('hide');

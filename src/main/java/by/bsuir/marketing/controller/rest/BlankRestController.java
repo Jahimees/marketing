@@ -18,10 +18,11 @@ public class BlankRestController {
     private final BlankDataService blankDataService;
 
     @GetMapping
-    public ResponseEntity<List<Blank>> getAllBlanks(@RequestParam(required = false) Integer idAccount) {
+    public ResponseEntity<List<Blank>> getAllBlanks(@RequestParam(required = false) Integer idAccount,
+                                                    @RequestParam(required = false) boolean isPublic) {
         if (idAccount == null) {
 
-            List<Blank> blanks = blankDataService.getAllBlanks();
+            List<Blank> blanks = blankDataService.getAllBlanks(isPublic);
             return new ResponseEntity<>(blanks, HttpStatus.OK);
         } else {
             return ResponseEntity.ok(blankDataService.getBlanksByIdAccount(idAccount));
@@ -47,6 +48,7 @@ public class BlankRestController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Blank> updateBlank(@PathVariable int id, @RequestBody Blank blank) {
+        blank.setIdBlank(id);
         Blank updatedBlank = blankDataService.createBlank(blank);
         if (updatedBlank != null) {
             return new ResponseEntity<>(updatedBlank, HttpStatus.OK);

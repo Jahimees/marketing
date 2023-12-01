@@ -4,9 +4,8 @@ import by.bsuir.marketing.model.BaseEntity;
 import by.bsuir.marketing.model.BlankAnswer;
 import by.bsuir.marketing.model.MyResponseEntity;
 import by.bsuir.marketing.service.BlankAnswerDataService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.connector.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +21,13 @@ public class BlankAnswerRestController {
     private final BlankAnswerDataService blankAnswerDataService;
 
     @GetMapping
-    public ResponseEntity<List<BlankAnswer>> getAllBlankAnswers() {
-        return new ResponseEntity<>(blankAnswerDataService.getAllBlankAnswers(), HttpStatus.OK);
+    public ResponseEntity<List<BlankAnswer>> getAllBlankAnswers(@RequestParam(required = false) Integer idBlank) {
+
+        if (idBlank != null) {
+            return ResponseEntity.ok(blankAnswerDataService.getAllBlankAnswersByIdBlank(idBlank));
+        } else {
+            return ResponseEntity.ok(blankAnswerDataService.getAllBlankAnswers());
+        }
     }
 
     @GetMapping("/{id}")
@@ -38,7 +42,8 @@ public class BlankAnswerRestController {
     }
 
     @PostMapping
-    public ResponseEntity<BlankAnswer> createBlankAnswer(@RequestBody BlankAnswer blankAnswer) {
+    public ResponseEntity<BlankAnswer> createBlankAnswer(@RequestBody BlankAnswer blankAnswer, HttpServletRequest request) {
+        blankAnswer.setIpAddress(request.getRemoteAddr());
         return ResponseEntity.ok(blankAnswerDataService.createBlankAnswer(blankAnswer));
     }
 

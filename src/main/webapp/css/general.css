@@ -192,3 +192,14 @@ div {
 .modal-dialog.big-dialog {
     max-width: 1000px !important;
 }
+
+.answer-field-group {
+    white-space: nowrap;
+    margin: 10px 0 0 30px;
+}
+
+.answer-block {
+    display: inline-grid;
+    width: -webkit-fill-available;
+    justify-items: start;
+}
