@@ -1,4 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <html>
 <head>
     <title>Маркетинговые исследования. Аккаунт</title>
@@ -11,18 +16,26 @@
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
-<div class="background-layer">
+<div id="background-layer" class="background-layer">
     <header class="white-block w-80 center-box">
         <div class="left-right-container">
             <div class="inline-flex-box horizontal-center" style="margin: auto 0; align-content: center">
                 <a href="/">
                     <div class="simple-btn btn-gray">Главная страница</div>
                 </a>
-                <div id="blanks-btn" class="simple-btn btn-gray">Анкеты</div>
-                <div id="swot-btn" class="simple-btn btn-gray">SWOT</div>
-                <div id="products-btn" class="simple-btn btn-gray">Товары/Услуги</div>
+                <sec:authorize access="hasRole('ROLE_MARKETER')">
+                    <div id="blanks-btn" class="simple-btn btn-gray">Анкеты</div>
+                    <div id="swot-btn" class="simple-btn btn-gray">SWOT</div>
+                    <div id="products-btn" class="simple-btn btn-gray">Товары/Услуги</div>
+                </sec:authorize>
+                <sec:authorize access="hasRole('ROLE_ADMIN')">
+                    <div id="marketers-btn" class="simple-btn btn-gray">Пользователи</div>
+                </sec:authorize>
             </div>
             <div>
+                <a href="/logout">
+                    Выход
+                </a>
                 <a href="/account">
                     <div class="inline-flex-box">
                         <div id="username-placeholder" class="big-text" style="margin-right: 10px">Личный кабинет</div>
@@ -57,36 +70,50 @@
             url: "/api/accounts/" + id,
             dataType: "json",
             contentType: "application/json",
+            async: false,
             success: (data) => {
                 $("#username-placeholder").text(data.username)
                 authenticatedUser = data;
             }
         })
 
-        $("#blanks-btn").unbind()
-        $("#blanks-btn").on("click", function () {
-            doRequest("/blanks")
-        })
+        if (authenticatedUser.accountStatus.idAccountStatus === 2) {
+            $("#background-layer").html('<div class="blue-line">Внимание! Ваш аккаунт был заблокирован! Обратитесь к администратору!</div>' +
+                '<div class="center-box">' +
+                '<a class="big-title-text m-r-10px simple-btn btn-gray" href="/">На главную</a>' +
+                '<a class="big-title-text simple-btn btn-gray" href="/logout">Выйти из аккаунта</a></div>');
+        } else {
 
-        $("#swot-btn").unbind();
-        $("#swot-btn").on("click", function () {
-            doRequest("/swot")
-        })
-
-        $("#products-btn").unbind();
-        $("#products-btn").on("click", function () {
-            doRequest("/products")
-        })
-
-        function doRequest(url) {
-            $.ajax({
-                method: "get",
-                url: url,
-                contentType: "text/html",
-                success: (data) => {
-                    $("#content-placeholder").html(data)
-                }
+            $("#blanks-btn").unbind()
+            $("#blanks-btn").on("click", function () {
+                doRequest("/blanks")
             })
+
+            $("#swot-btn").unbind();
+            $("#swot-btn").on("click", function () {
+                doRequest("/swot")
+            })
+
+            $("#products-btn").unbind();
+            $("#products-btn").on("click", function () {
+                doRequest("/products")
+            })
+
+            $("#marketers-btn").unbind();
+            $("#marketers-btn").on("click", function () {
+                doRequest("/marketers");
+            })
+
+            function doRequest(url) {
+                $.ajax({
+                    method: "get",
+                    url: url,
+                    contentType: "text/html",
+                    success: (data) => {
+                        $("#content-placeholder").html(data)
+                    }
+                })
+            }
         }
     })
 </script>

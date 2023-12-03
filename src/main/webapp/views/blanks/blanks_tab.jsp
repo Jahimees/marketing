@@ -28,5 +28,6 @@
 <script>
     $(document).ready(() => {
         initBlankTab();
+        $("#view-blanks-btn").click();
     })
 </script>

@@ -32,8 +32,9 @@ public class Account implements BaseEntity, UserDetails {
     @JoinColumn(name = "idrole")
     private Role role;
 
-    @Column(name = "idaccount_status")
-    private int idAccountStatus;
+    @ManyToOne
+    @JoinColumn(name = "idaccount_status")
+    private AccountStatus accountStatus;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -47,7 +48,8 @@ public class Account implements BaseEntity, UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return accountStatus != null &&
+                accountStatus.getIdAccountStatus() == 1;
     }
 
     @Override
