@@ -1,9 +1,11 @@
 package by.bsuir.marketing.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
 @Table(name = "product_info")
@@ -19,10 +21,12 @@ public class ProductInfo implements BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "idproduct")
+    @JsonBackReference
+    @JsonIgnoreProperties("productInfos")
     private Product product;
 
     @Column(name = "month")
-    private Timestamp month;
+    private Date month;
 
     @Column(name = "sell_count")
     private double sellCount;
@@ -35,4 +39,7 @@ public class ProductInfo implements BaseEntity {
 
     @Column(name = "surplus")
     private double surplus;
+
+    @Column(name = "filling_date")
+    private Date fillingDate;
 }

@@ -41,6 +41,5 @@ public class BlankAnswer implements BaseEntity {
 
     @OneToMany(mappedBy = "blankAnswer", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonManagedReference
-    @JsonIgnoreProperties("blankAnswer")
     private List<FieldAnswer> fieldAnswers;
 }

@@ -1,9 +1,12 @@
 package by.bsuir.marketing.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "product")
@@ -33,4 +36,9 @@ public class Product implements BaseEntity {
     @ManyToOne
     @JoinColumn(name = "idaccount")
     private Account account;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    @JsonIgnoreProperties("product")
+    private List<ProductInfo> productInfos;
 }

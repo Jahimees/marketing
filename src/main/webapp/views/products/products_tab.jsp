@@ -22,17 +22,15 @@
 </div>
 
 <jsp:include page="../common/create_product_popup.jsp"/>
+<jsp:include page="../common/product_details_popup.jsp"/>
 
 <script src="../../js/datatables.js"></script>
 <script src="../../js/products.js"></script>
 <script>
-
-
     $(document).ready(() => {
         loadProductTypes();
         loadProducts();
         initButtons();
         setTimeout(fillProductsTable(), 200);
-
     })
 </script>

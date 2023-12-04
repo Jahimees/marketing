@@ -25,7 +25,6 @@ public class FieldVariantAnswer implements BaseEntity {
     @JoinColumn(name = "idfield_answer")
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
-    @JsonIgnoreProperties("fieldVariantAnswers")
     private FieldAnswer fieldAnswer;
 
     @Column(name = "text")

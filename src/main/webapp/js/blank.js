@@ -1,5 +1,4 @@
 {
-    //TODO грузить для  просмотра + волшебные методы, которые всё заполняют
     let createTabCache;
     let viewTabCache;
     let templatesTabCache;
@@ -475,6 +474,10 @@
 
     let blanksCache;
 
+    function getBlanksCache() {
+        return blanksCache;
+    }
+
     ///////////VIEW TAB
     function initViewTab() {
         reloadBlanks(authenticatedUser.idAccount);
@@ -565,7 +568,84 @@
 
         $("#blank-analytics-placeholder").html('')
 
-        const answers = loadAnswersByIdBlank(idBlank);
+        initDateSelectors(idBlank)
+        calculateStatistics(currentBlank)
+        calculateSupplyDemandChart(currentBlank)
+
+        $("#reload-statistics-btn").unbind()
+        $("#reload-statistics-btn").on("click", () => {
+            calculateStatistics(currentBlank);
+        })
+
+        $("#blankAnalyticsModal").modal('show');
+    }
+
+    function calculateSupplyDemandChart(currentBlank) {
+        if (typeof currentBlank.product !== "undefined") {
+            console.log(currentBlank.product)
+
+            // let labels = new Map();
+            let prices = new Map();
+            let sellCount = []
+            let productionCount  = []
+
+            let counter = 0;
+            currentBlank.product.productInfos.forEach(productInfo => {
+                // labels.set(counter++, productInfo.sellCount);
+                prices.set(counter++, productInfo.price)
+                sellCount.push(productInfo.sellCount);
+                productionCount.push(productInfo.productionCount + productInfo.surplus - productInfo.sellCount);
+            })
+
+            const mapSort1 = new Map([...prices.entries()].sort((a, b) => a[1] - b[1]));
+
+            // let newPrices = [];
+            let newSellCount = [];
+            let newProductionCount = [];
+
+            for (let i = 0; i < prices.size; i++) {
+                console.log("hehe")
+                newSellCount[i] = sellCount[Array.from(mapSort1.keys())[i]]
+                newProductionCount[i] = productionCount[Array.from(mapSort1.keys())[i]]
+                // newPrices[i] = prices[Array.from(mapSort1.keys())[i]];
+            }
+
+            console.log(mapSort1)
+            new Chartist.Line('.ct-chart-supply-demand', {
+                labels: Array.from(mapSort1.values()),
+                series: [
+                    newSellCount,
+                    newProductionCount
+                ]
+            }, {
+                width: "300px",
+                height: "300px",
+                fullWidth: true,
+                chartPadding: {
+                    right: 40
+                }
+            });
+
+            // new Chartist.Line('.ct-chart-supply-demand', {
+            //     labels: Array.from(mapSort1.values()),
+            //     series: [
+            //         newPrices,
+            //     ]
+            // }, {
+            //     width: "300px",
+            //     height: "300px",
+            //     fullWidth: true,
+            //     chartPadding: {
+            //         right: 40
+            //     }
+            // });
+        }
+    }
+
+    function calculateStatistics(currentBlank, startDate, endDate) {
+        $("#blank-analytics-placeholder").html('')
+
+        const answers = loadAnswersByIdBlank(currentBlank.idBlank);
         currentBlank.fields.forEach(field => {
             const answerBlock = $("<div></div>")
             const questionText = $("<div><b>Вопрос: " + field.text + "</b></div>");
@@ -579,41 +659,51 @@
             }
 
             answers.forEach(answer => {
-                answer.fieldAnswers.forEach(fieldAnswer => {
-                    if (fieldAnswer.field.idField === field.idField) {
+                const answerDate = new Date(answer.answerDate);
 
-                        if (field.fieldType.idFieldType === 3) {
-                            const textAnswerBlock = $("<div style='padding: 10px; height: 125px; background-color: #EFEFEF; margin-bottom: 10px; border-radius: 10px'></div>")
-                            textAnswerBlock.append("<div><b>" + answer.username + " "
-                                + new Date(answer.answerDate).toLocaleDateString('ru')
-                                + ":</b></div><div style='height: 100px'>" + fieldAnswer.answer + "</div>")
+                if ((typeof startDate === "undefined" || typeof endDate === "undefined")
+                    || (answerDate >= startDate && answerDate <= endDate)) {
+                    answer.fieldAnswers.forEach(fieldAnswer => {
+                        if (fieldAnswer.field.idField === field.idField) {
 
-                            textAnswersBlock.append(textAnswerBlock);
-                        } else {
-                            fieldAnswer.fieldVariantAnswers.forEach(fieldVariantAnswer => {
-                                let idFieldVariant = fieldVariantAnswer.fieldVariant.idFieldVariant;
-                                if (fieldAnswerCounter.has(idFieldVariant)) {
-                                    fieldAnswerCounter.set(idFieldVariant, fieldAnswerCounter.get(idFieldVariant) + 1);
-                                } else {
-                                    fieldAnswerCounter.set(idFieldVariant, 1);
-                                }
-                            })
+                            if (field.fieldType.idFieldType === 3) {
+                                const textAnswerBlock = $("<div style='padding: 10px; height: 125px; background-color: #EFEFEF; margin-bottom: 10px; border-radius: 10px'></div>")
+                                textAnswerBlock.append("<div><b>" + answer.username + " "
+                                    + new Date(answer.answerDate).toLocaleDateString('ru')
+                                    + ":</b></div><div style='height: 100px'>" + fieldAnswer.answer + "</div>")
+
+                                textAnswersBlock.append(textAnswerBlock);
+                            } else {
+                                fieldAnswer.fieldVariantAnswers.forEach(fieldVariantAnswer => {
+                                    let idFieldVariant = fieldVariantAnswer.fieldVariant.idFieldVariant;
+                                    if (fieldAnswerCounter.has(idFieldVariant)) {
+                                        fieldAnswerCounter.set(idFieldVariant, fieldAnswerCounter.get(idFieldVariant) + 1);
+                                    } else {
+                                        fieldAnswerCounter.set(idFieldVariant, 1);
+                                    }
+                                })
+                            }
                         }
-                    }
-                })
+                    })
+                }
             })
 
-            console.log(fieldAnswerCounter)
-            fieldAnswerCounter.forEach((value, key) => {
-                const foundVariant = findFieldVariantById(currentBlank, key)
-                answerBlock.append("<div>" + foundVariant.text + ": " + value + "</div>")
-            })
-
-            answerBlock.append("<hr>")
             $("#blank-analytics-placeholder").append(answerBlock)
-        })
 
-        $("#blankAnalyticsModal").modal('show');
+            if (field.fieldType.idFieldType !== 3) {
+                const pieBlock = $("<div name='pieBlock' class='inline-flex-box'></div>");
+                pieBlock.append("<div class='ct-chart-" + field.idField + "'>")
+
+                answerBlock.append(pieBlock)
+
+                if (fieldAnswerCounter.size !== 0) {
+                    redrawChart(field.idField, fieldAnswerCounter, currentBlank);
+                } else {
+                    answerBlock.append("<div>Данных не найдено</div>")
+                }
+            }
+            answerBlock.append("<hr>")
+        })
     }
 
     function findFieldVariantById(currentBlank, idVariant) {

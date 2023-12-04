@@ -29,7 +29,6 @@ public class FieldAnswer implements BaseEntity {
     @JoinColumn(name = "idblank_answer")
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
-    @JsonIgnoreProperties("fieldAnswers")
     private BlankAnswer blankAnswer;
 
     @ManyToOne
@@ -41,6 +40,5 @@ public class FieldAnswer implements BaseEntity {
 
     @OneToMany(mappedBy = "fieldAnswer", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonManagedReference
-    @JsonIgnoreProperties("fieldAnswer")
     private List<FieldVariantAnswer> fieldVariantAnswers;
 }

@@ -20,10 +20,7 @@ public class FieldVariant implements BaseEntity {
     @JoinColumn(name = "idfield")
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
-//    @Transient
-    @JsonIgnoreProperties("fieldVariants")
     private Field field;
-
 
     @Column(name = "text")
     private String text;

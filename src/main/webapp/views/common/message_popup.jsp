@@ -6,7 +6,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="messageModalLabel">Sample text</h5>
                 <div class="close close-button" data-bs-dismiss="modal" aria-label="Закрыть">
-                    <span aria-hidden="true">X</span>
+                    <span aria-hidden="true" style="cursor: pointer">X</span>
                 </div>
             </div>
             <div class="modal-body">

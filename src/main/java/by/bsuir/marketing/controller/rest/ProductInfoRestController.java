@@ -31,8 +31,13 @@ public class ProductInfoRestController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductInfo>> getAllProductInfo() {
-        return ResponseEntity.ok(productInfoDataService.getAllProductInfo());
+    public ResponseEntity<List<ProductInfo>> getAllProductInfo(@RequestParam(required = false) Integer idProduct) {
+
+        if (idProduct == null) {
+            return ResponseEntity.ok(productInfoDataService.getAllProductInfo());
+        } else {
+            return ResponseEntity.ok(productInfoDataService.getAllProductInfoByIdProduct(idProduct));
+        }
     }
 
     @PostMapping
