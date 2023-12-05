@@ -240,3 +240,30 @@ div {
 .close-button {
     cursor: pointer;
 }
+
+.swot-textarea {
+    width: 350px;
+    height: 200px;
+    resize: none;
+    font-size: 18px !important;
+}
+
+#strong {
+    background-color: #a9c28b;
+}
+
+#weak {
+    background-color: #99c9f9;
+}
+
+#threat {
+    background-color: #ffa296;
+}
+
+#opportunity {
+    background-color: #ffe69d;
+}
+
+.swot-label {
+    font-size: 25px;
+}

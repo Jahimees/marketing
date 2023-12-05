@@ -17,9 +17,10 @@
         </tbody>
     </table>
 </div>
-
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
     $(document).ready(() => {
+        google.charts.load('current', {packages: ['corechart', 'line']});
         initViewTab();
     })
 </script>

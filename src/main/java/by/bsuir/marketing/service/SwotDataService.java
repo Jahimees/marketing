@@ -1,8 +1,10 @@
 package by.bsuir.marketing.service;
 
+import by.bsuir.marketing.model.Account;
 import by.bsuir.marketing.model.Swot;
 import by.bsuir.marketing.repository.SwotRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.Optional;
 public class SwotDataService implements DataService<Swot> {
 
     private final SwotRepository swotRepository;
+    private final AccountDataService accountDataService;
 
     public List<Swot> getAllSwots() {
         return swotRepository.findAll();
@@ -22,8 +25,25 @@ public class SwotDataService implements DataService<Swot> {
         return swotRepository.findById(id);
     }
 
+    public List<Swot> getAllSwotsByIdAccount(int idAccount) {
+        Optional<Account> accountOptional = accountDataService.getAccountById(idAccount);
+
+        if (accountOptional.isEmpty()) {
+            throw new NotFoundException("Account not found");
+        }
+
+        return swotRepository.findAllByAccount(accountOptional.get());
+    }
+
     public Swot createSwot(Swot swot) {
-        return swotRepository.save(swot);
+        Optional<Account> accountOptional = accountDataService.getAccountById(swot.getAccount().getIdAccount());
+
+        if (accountOptional.isEmpty()) {
+            throw new NotFoundException("Account not found");
+        }
+
+        swot.setAccount(accountOptional.get());
+        return swotRepository.saveAndFlush(swot);
     }
 
     public Swot updateSwot(int id, Swot swot) {

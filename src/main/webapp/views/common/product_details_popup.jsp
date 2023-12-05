@@ -19,8 +19,6 @@
                     <div class="col-4">
                         <label for="product-type-group">Тип</label>
                         <div id="product-type-group" style="display: table-caption">
-                            <%--                        <input name="product-type" type="radio">--%>
-                            <%--                        <input name="product-type" type="radio">--%>
                         </div>
                     </div>
                 </div>
@@ -84,6 +82,9 @@
                 </table>
             </div>
             <div class="modal-footer">
+                <button id="confirm-save-swot-btn" class="btn btn-primary">
+                    Создать
+                </button>
                 <button class="btn btn-primary" data-bs-dismiss="modal">
                     Закрыть
                 </button>

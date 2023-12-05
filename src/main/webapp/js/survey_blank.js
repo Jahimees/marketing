@@ -23,20 +23,24 @@
     }
 
     function initBlankSurvey(blank) {
-        $("#survey-blank-placeholder").html('')
-        $("#blank-name-placeholder").text(blank.name)
-        const fieldTypes = loadFieldTypesCache()
+        if (blank.blankStatus.idBlankStatus !== 2) {
+            $("#survey-blank-placeholder").append($("<div class='blue-line'>Анкета не опубликована!</div>"))
+            $("#send-answer-btn").remove()
+            $("#user-info-placeholder").remove()
+        } else {
+            $("#survey-blank-placeholder").html('')
+            $("#blank-name-placeholder").text(blank.name)
+            const fieldTypes = loadFieldTypesCache()
 
-        blank.fields.forEach(field => {
-            initQuestion(field, fieldTypes)
-        })
+            blank.fields.forEach(field => {
+                initQuestion(field, fieldTypes)
+            })
 
-        $("#send-answer-btn").unbind()
-        $("#send-answer-btn").on('click', () => {
-            validateAndSave(blank);
-        })
-
-        // $("#survey-blank-placeholder").html(JSON.stringify(blank));
+            $("#send-answer-btn").unbind()
+            $("#send-answer-btn").on('click', () => {
+                validateAndSave(blank);
+            })
+        }
     }
 
     function validateAndSave(blank) {
@@ -96,7 +100,6 @@
             return;
         }
 
-        console.log(fieldAnswers)
         const blankAnswer = {
             blank: {
                 idBlank: blank.idBlank
@@ -104,7 +107,6 @@
             username: usernameText,
             fieldAnswers: fieldAnswers
         }
-
 
         $.ajax({
             method: "post",
@@ -168,5 +170,4 @@
         $questionBlock.append($questionText).append($answerBlock).append($("<hr>"));
         $("#survey-blank-placeholder").append($questionBlock);
     }
-
 }

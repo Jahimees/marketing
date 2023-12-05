@@ -3,6 +3,7 @@ package by.bsuir.marketing.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,9 +14,14 @@ import java.util.List;
 @Table(name = "account")
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
 public class Account implements BaseEntity, UserDetails {
 
     private static final long serialVersionUID = 1l;
+
+    public Account(int idAccount) {
+        this.idAccount = idAccount;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

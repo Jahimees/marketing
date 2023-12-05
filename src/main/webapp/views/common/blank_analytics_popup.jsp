@@ -59,7 +59,7 @@
 
             </div>
             <div id="supply-demand-chart-box">
-                <div class="ct-chart-supply-demand">
+                <div id="curve_chart">
 
                 </div>
             </div>

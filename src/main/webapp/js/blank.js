@@ -570,7 +570,6 @@
 
         initDateSelectors(idBlank)
         calculateStatistics(currentBlank)
-        calculateSupplyDemandChart(currentBlank)
 
         $("#reload-statistics-btn").unbind()
         $("#reload-statistics-btn").on("click", () => {
@@ -578,16 +577,23 @@
         })
 
         $("#blankAnalyticsModal").modal('show');
+
+        $("#blankAnalyticsModal").unbind();
+        $("#blankAnalyticsModal").on("shown.bs.modal", () => {
+            console.log("here")
+            calculateSupplyDemandChart(currentBlank);
+        })
+
     }
 
     function calculateSupplyDemandChart(currentBlank) {
+        console.log("SHOWN")
         if (typeof currentBlank.product !== "undefined") {
-            console.log(currentBlank.product)
 
             // let labels = new Map();
             let prices = new Map();
             let sellCount = []
-            let productionCount  = []
+            let productionCount = []
 
             let counter = 0;
             currentBlank.product.productInfos.forEach(productInfo => {
@@ -597,7 +603,7 @@
                 productionCount.push(productInfo.productionCount + productInfo.surplus - productInfo.sellCount);
             })
 
-            const mapSort1 = new Map([...prices.entries()].sort((a, b) => a[1] - b[1]));
+            const sortedPricesMap = new Map([...prices.entries()].sort((a, b) => a[1] - b[1]));
 
             // let newPrices = [];
             let newSellCount = [];
@@ -605,40 +611,23 @@
 
             for (let i = 0; i < prices.size; i++) {
                 console.log("hehe")
-                newSellCount[i] = sellCount[Array.from(mapSort1.keys())[i]]
-                newProductionCount[i] = productionCount[Array.from(mapSort1.keys())[i]]
+                newSellCount[i] = sellCount[Array.from(sortedPricesMap.keys())[i]]
+                newProductionCount[i] = productionCount[Array.from(sortedPricesMap.keys())[i]]
                 // newPrices[i] = prices[Array.from(mapSort1.keys())[i]];
             }
 
-            console.log(mapSort1)
-            new Chartist.Line('.ct-chart-supply-demand', {
-                labels: Array.from(mapSort1.values()),
-                series: [
-                    newSellCount,
-                    newProductionCount
-                ]
-            }, {
-                width: "300px",
-                height: "300px",
-                fullWidth: true,
-                chartPadding: {
-                    right: 40
-                }
-            });
+            let supplyArray = [];
+            let demandArray = [];
+            let sortedPricesArray = Array.from(sortedPricesMap.values());
 
-            // new Chartist.Line('.ct-chart-supply-demand', {
-            //     labels: Array.from(mapSort1.values()),
-            //     series: [
-            //         newPrices,
-            //     ]
-            // }, {
-            //     width: "300px",
-            //     height: "300px",
-            //     fullWidth: true,
-            //     chartPadding: {
-            //         right: 40
-            //     }
-            // });
+            console.log(sortedPricesArray)
+            for (let i = 0; i < newSellCount.length; i++) {
+                demandArray.push([sortedPricesArray[i], newSellCount[i], newProductionCount[i]])
+                supplyArray.push([newProductionCount[i], sortedPricesArray[i]])
+            }
+
+            drawBackgroundColor(demandArray, supplyArray);
+            console.log(sortedPricesMap)
         }
     }
 

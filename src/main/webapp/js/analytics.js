@@ -1,4 +1,46 @@
 {
+    // google.charts.setOnLoadCallback(drawBackgroundColor);
+
+    function drawBackgroundColor(demandArray, supplyArray) {
+        console.log(demandArray, supplyArray)
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'X');
+        data.addColumn('number', 'Спрос');
+        data.addColumn('number', 'Предложение');
+
+        data.addRows(
+            demandArray
+        );
+
+        var options = {
+            hAxis: {
+                title: 'Количество товара',
+                // visible: true,
+                // viewWindowMode: 'pretty',
+                format: 'long'
+            },
+            vAxis: {
+                title: 'Цена',
+                format: 'long',
+                // gridlines: {count: 4}
+                // gridlines: {
+                //     interval: 10
+                // },
+                // showTextEvery: 1,
+                // format: 'long'
+
+            },
+            orientation: 'vertical',
+            width: 800,
+            height: 500,
+            // chartArea: {
+            // },
+            backgroundColor: '#f1f8e9'
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        chart.draw(data, options);
+    }
 
     function initDateSelectors(idBlank) {
         initSelectors();
@@ -42,8 +84,8 @@
 
     function initSelectListeners(idBlank) {
         let chartNames = [];
-            chartNames.push("start");
-            chartNames.push("end");
+        chartNames.push("start");
+        chartNames.push("end");
 
         chartNames.forEach(cn => {
             $("#year-selector-" + cn).unbind()
@@ -61,7 +103,6 @@
     function reloadBlankStatistics(idBlank) {
         const blanks = getBlanksCache();
 
-        console.log(blanks)
         let currentBlank
         blanks.forEach(blank => {
             if (idBlank === blank.idBlank) {

@@ -31,5 +31,6 @@ public class Swot implements BaseEntity {
     @Column(name = "threat")
     private String threat;
 
-    // constructors, getters, setters, etc.
+    @Column(name = "name")
+    private String name;
 }
