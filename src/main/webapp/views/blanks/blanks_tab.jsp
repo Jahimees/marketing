@@ -9,9 +9,6 @@
         <div id="view-blanks-btn" class="menu-btn btn-gray">
             Просмотр
         </div>
-        <div id="templates-btn" class="menu-btn btn-gray">
-            Шаблоны
-        </div>
     </div>
     <div id="blank-working-space" class="white-block w-80" style="margin-left: 2%">
         Рабочая область

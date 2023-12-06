@@ -38,10 +38,6 @@ public class Field implements BaseEntity {
     @JsonBackReference
     private Blank blank;
 
-    @ManyToOne
-    @JoinColumn(name = "idtemplate")
-    private Template template;
-
     @OneToMany(mappedBy = "field", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private List<FieldVariant> fieldVariants;

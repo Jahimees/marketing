@@ -46,14 +46,4 @@ public class BlankAnswerRestController {
         blankAnswer.setIpAddress(request.getRemoteAddr());
         return ResponseEntity.ok(blankAnswerDataService.createBlankAnswer(blankAnswer));
     }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<BlankAnswer> updateBlankAnswer(@PathVariable int id, @RequestBody BlankAnswer blankAnswer) {
-        return ResponseEntity.ok(blankAnswerDataService.updateBlankAnswer(id, blankAnswer));
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteBlankAnswer(@PathVariable int id) {
-        blankAnswerDataService.deleteBlankAnswer(id);
-    }
 }

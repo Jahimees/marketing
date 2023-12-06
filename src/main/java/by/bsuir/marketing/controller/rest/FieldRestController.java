@@ -7,7 +7,10 @@ import by.bsuir.marketing.service.FieldDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,22 +36,5 @@ public class FieldRestController {
         }
 
         return ResponseEntity.ok(fieldOptional.get());
-    }
-
-    @PostMapping
-    public ResponseEntity<Field> createField(@RequestBody Field field) {
-        return ResponseEntity.ok(fieldDataService.createField(field));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Field> updateField(@PathVariable int id, @RequestBody Field field) {
-        return ResponseEntity.ok(fieldDataService.updateField(id, field));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<BaseEntity> deleteField(@PathVariable int id) {
-        fieldDataService.deleteField(id);
-
-        return new ResponseEntity<>(new MyResponseEntity("Поле удалено"), HttpStatus.OK);
     }
 }

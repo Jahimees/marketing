@@ -14,6 +14,7 @@
             $("#opportunity").val('')
             $("#threat").val('');
             $("#swot-id").val('');
+            $("#swot-name-input").val('')
             $("#swotModal").modal('show');
         })
 

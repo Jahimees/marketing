@@ -20,6 +20,7 @@ public class AccountRestController {
 
     private final AccountDataService accountDataService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<BaseEntity> createAccount(@RequestBody Account account) {
         return ResponseEntity.ok(accountDataService.createAccount(account));
@@ -35,6 +36,7 @@ public class AccountRestController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/checkby")
     public ResponseEntity<Boolean> getAccountByName(@RequestParam String username) {
         return ResponseEntity.ok(accountDataService.isAccountExistsByUsername(username));
@@ -52,6 +54,7 @@ public class AccountRestController {
         return ResponseEntity.ok(accountOptional.get());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{idAccount}")
     public ResponseEntity<Account> updateAccountStatus(@PathVariable int idAccount) {
         return ResponseEntity.ok(accountDataService.changeStatus(idAccount));

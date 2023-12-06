@@ -38,7 +38,6 @@ public class FieldDataService implements DataService<Field> {
             existingField.setText(field.getText());
             existingField.setFieldType(field.getFieldType());
             existingField.setBlank(field.getBlank());
-            existingField.setTemplate(field.getTemplate());
             return fieldRepository.save(existingField);
         }
         return null;

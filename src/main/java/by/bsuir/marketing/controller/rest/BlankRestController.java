@@ -5,6 +5,7 @@ import by.bsuir.marketing.service.BlankDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,12 +41,14 @@ public class BlankRestController {
         }
     }
 
+    @PreAuthorize("hasRole('MARKETER')")
     @PostMapping
     public ResponseEntity<Blank> createBlank(@RequestBody Blank blank) {
         Blank createdBlank = blankDataService.createBlank(blank);
         return new ResponseEntity<>(createdBlank, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('MARKETER')")
     @PutMapping("/{id}")
     public ResponseEntity<Blank> updateBlank(@PathVariable int id, @RequestBody Blank blank) {
         blank.setIdBlank(id);
@@ -57,6 +60,7 @@ public class BlankRestController {
         }
     }
 
+    @PreAuthorize("hasRole('MARKETER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBlank(@PathVariable int id) {
         blankDataService.deleteBlank(id);

@@ -5,12 +5,10 @@ import by.bsuir.marketing.model.MyResponseEntity;
 import by.bsuir.marketing.model.Product;
 import by.bsuir.marketing.service.ProductDataService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/products")
@@ -29,25 +27,9 @@ public class ProductRestController {
 
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<BaseEntity> getProductById(@PathVariable int id) {
-        Optional<Product> productOptional = productDataService.getProductById(id);
-
-        if (productOptional.isEmpty()) {
-            return new ResponseEntity<>(new MyResponseEntity("Продукт не найден"), HttpStatus.NOT_FOUND);
-        }
-
-        return ResponseEntity.ok(productOptional.get());
-    }
-
     @PostMapping
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
         return ResponseEntity.ok(productDataService.createProduct(product));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable int id, @RequestBody Product product) {
-        return ResponseEntity.ok(productDataService.updateProduct(id, product));
     }
 
     @DeleteMapping("/{id}")

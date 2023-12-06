@@ -37,28 +37,4 @@ public class AccountStatusRestController {
             return ResponseEntity.ok(accountStatus.get());
         }
     }
-
-    @PostMapping
-    public ResponseEntity<AccountStatus> createAccountStatus(@RequestBody AccountStatus accountStatus) {
-        AccountStatus createdAccountStatus = accountStatusDataService.createAccountStatus(accountStatus);
-
-        return ResponseEntity.ok(createdAccountStatus);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<BaseEntity> updateAccountStatus(@PathVariable int id, @RequestBody AccountStatus accountStatus) {
-        AccountStatus updatedAccountStatus = accountStatusDataService.updateAccountStatus(id, accountStatus);
-
-        if (updatedAccountStatus != null) {
-            return new ResponseEntity<>(updatedAccountStatus, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(new MyResponseEntity("Обновляемый аккаунт статус не найден"), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<BaseEntity> deleteAccountStatus(@PathVariable int id) {
-        accountStatusDataService.deleteAccountStatus(id);
-        return new ResponseEntity<>(new MyResponseEntity("Аккаунт статус удален"), HttpStatus.OK);
-    }
 }

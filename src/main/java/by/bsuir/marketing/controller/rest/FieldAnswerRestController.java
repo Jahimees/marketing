@@ -5,11 +5,12 @@ import by.bsuir.marketing.model.FieldAnswer;
 import by.bsuir.marketing.model.MyResponseEntity;
 import by.bsuir.marketing.service.FieldAnswerDataService;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.connector.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,22 +36,5 @@ public class FieldAnswerRestController {
         }
 
         return ResponseEntity.ok(fieldAnswerOptional.get());
-    }
-
-    @PostMapping
-    public ResponseEntity<FieldAnswer> createFieldAnswer(@RequestBody FieldAnswer fieldAnswer) {
-        return ResponseEntity.ok(fieldAnswerDataService.createFieldAnswer(fieldAnswer));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<FieldAnswer> updateFieldAnswer(@PathVariable int id, @RequestBody FieldAnswer fieldAnswer) {
-        return ResponseEntity.ok(fieldAnswerDataService.updateFieldAnswer(id, fieldAnswer));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<BaseEntity> deleteFieldAnswer(@PathVariable int id) {
-        fieldAnswerDataService.deleteFieldAnswer(id);
-
-        return new ResponseEntity<>(new MyResponseEntity("Ответ на поле удален"), HttpStatus.OK);
     }
 }

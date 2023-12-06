@@ -49,6 +49,7 @@ public class SwotDataService implements DataService<Swot> {
     public Swot updateSwot(int id, Swot swot) {
         Swot existingSwot = swotRepository.findById(id).orElse(null);
         if (existingSwot != null) {
+            existingSwot.setName(swot.getName());
             existingSwot.setStrength(swot.getStrength());
             existingSwot.setWeakness(swot.getWeakness());
             existingSwot.setOpportunity(swot.getOpportunity());
